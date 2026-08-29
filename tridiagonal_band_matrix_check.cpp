@@ -48,7 +48,6 @@ int main(){
 	}else{
 		printf("\nThe given matrix is NOT Tridiagonal.");	
 	}
-	
 	return 0;
 }
 void display_matrix(int mat[][5],int row,int col){
