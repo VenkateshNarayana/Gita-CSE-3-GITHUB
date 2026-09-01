@@ -23,7 +23,10 @@ Step5 : populate the row information as per the following 3 conditions,
 #include<stdio.h>
 //param1:original matrix,param2:orginal matrix row,param3:orginal matrix col,param4:trip matrix ,param5:non zero count
 void populate_sparse_into_triplet(int[][3], int,int,int[][3],int);
-void display_triplet(int triplet_mat[][3],int row,int col);
+void display_triplet(int triplet_mat[][3]);
+int get_element_from_triplet(int[][3],int,int);
+void display_matrix_from_triplet(int[][3]);//param1=triplet matrix 2d name
+
 void perform_addition_triplet(int trip_mat1[][3],int trip_mat2[][3],int result_mat[][3]);
 int main(){
 	int sparse_mat1[3][3]={
@@ -54,8 +57,9 @@ int main(){
 	int triplet_mat1[non_zero_count + 1][3];
 	//populate sparse into triplet matrix
 	populate_sparse_into_triplet(sparse_mat1,mat1_rows,mat1_cols,triplet_mat1,non_zero_count);
+	
 	//display matrix 1 in triplet form
-	display_triplet(triplet_mat1,non_zero_count+1,3);
+	display_triplet(triplet_mat1);
 	
 	//find the count of non zero elements of matrix2
 	non_zero_count=0;
@@ -71,58 +75,143 @@ int main(){
 	//populate sparse into triplet matrix
 	populate_sparse_into_triplet(sparse_mat2,mat2_rows,mat2_cols,triplet_mat2,non_zero_count);
 	//display matrix 1 in triplet form
-	display_triplet(triplet_mat2,non_zero_count+1,3);
+	display_triplet(triplet_mat2);
 	
-	int no_of_rows = (triplet_mat1[0][2])+(triplet_mat2[0][2]); //take the header rows from 2 matrixes and add
+	int no_of_rows = (triplet_mat1[0][2])+(triplet_mat2[0][2])+1; //take the header rows from 2 matrixes and add 1 for header
 	//create triplet result matrix using non zero count of matrix1 & matrix2
-	int triplet_res[no_of_rows][3];
+	int triplet_res[no_of_rows][3]={0};//deckare and initialise to zero
+	
 	//perform addition of triplet matrix1 with triplet matrix2 and save result in triplet result matrix
 	perform_addition_triplet(triplet_mat1,triplet_mat2,triplet_res);
-	//display matrix 1 in triplet form
-	display_triplet(triplet_res,no_of_rows,3);
+	
 }
 void perform_addition_triplet(int triplet_mat1[][3],int triplet_mat2[][3],int result_mat[][3]){
-	//step1: add header
-	result_mat[0][0] = triplet_mat1[0][0]; //triplet matrix1 rows
-	result_mat[0][1] = triplet_mat1[0][1]; //triplet matrix1 cols
-	result_mat[0][2] = (triplet_mat1[0][2])+(triplet_mat2[0][2]);//non zero count of triplet matrix1 and triplet matrix2
-	int k = 1; //row counter for the result triplet matrix
-	for(int i=1;i<result_mat[0][0];i++){
-//		for(int j=0;j<result_mat[0][1];j++){
-			//step2: add the (r,c,v) from triplet mat1 and triplet mat2 based on the following 3 conditions
-			//case 1 : when trip mat1 row == trip mat2 row and trip mat2 col == trip mat2 col
-			//		   then (r,c,v) --> result mat row(r) = r1/r2 ,result mat col (c)= c1/c2,result mat value(v)=v1 + v2	
-			if((triplet_mat1[i][0] == triplet_mat2[i][0]) && (triplet_mat1[i][1] == triplet_mat2[i][1])) {
-				result_mat[k][0] = triplet_mat1[i][0]; //row of trip1/trip2
-				result_mat[k][1] = triplet_mat1[i][1]; //col of trip1/trip2
-				result_mat[k][2] = triplet_mat1[i][2]+triplet_mat2[i][2];//mat1 value + mat2 value
-				k++; //increment k by 1 for next row
-			}else if((triplet_mat1[i][0] == triplet_mat2[i][0]) && (triplet_mat1[i][1] != triplet_mat2[i][1])){
-				if ((triplet_mat1[i][1] < triplet_mat2[i][1])) {
-					result_mat[k][0] = triplet_mat1[i][0]; //row of trip1
-					result_mat[k][1] = triplet_mat1[i][1]; //col of trip1
-					result_mat[k][2] = triplet_mat1[i][2]; //mat1 value
-					k++;
-				}else{
-					result_mat[k][0] = triplet_mat2[i][0]; //row of trip2
-					result_mat[k][1] = triplet_mat2[i][1]; //col of trip2
-					result_mat[k][2] = triplet_mat2[i][2]; //mat2 value
-					k++;
-				}
+	int i=1,j=1,k=1; //i is for mat1, j is for mat2, k is for result matrix
+	int trip_mat1_rows = triplet_mat1[0][2];
+	int trip_mat2_rows = triplet_mat2[0][2];
+	
+	//step1: add header row 0
+	result_mat[0][0]=triplet_mat1[0][0];//dimension row
+	result_mat[0][1]=triplet_mat2[0][1];//dimension col
+	result_mat[0][2]=trip_mat1_rows + trip_mat2_rows;//non zero count mat1 + non zero count mat2
+	
+	//step2: scan the rows of mat1 and mat2
+	while(i<(trip_mat1_rows+1) && j<(trip_mat2_rows+1)){
+		//check 3 conditions
+		//case 1: when row & col of both matrix are same
+		if(triplet_mat1[i][0]==triplet_mat2[j][0] && triplet_mat1[i][1]==triplet_mat2[j][1]){
+			//there will be only 1 entry in result mat
+			result_mat[k][0]=triplet_mat1[i][0];//dimension row
+			result_mat[k][1]=triplet_mat1[i][1];//dimension col
+			result_mat[k][2]= triplet_mat1[i][2]+triplet_mat2[j][2];//add the values of (mat1 +  mat2)
+			k++;//move to next row or result matrix
+			i++;//move to next row of mat1
+			j++;//move to next row of mat2
+		}else if(triplet_mat1[i][0]==triplet_mat2[j][0] && triplet_mat1[i][1]!=triplet_mat2[j][1]){
+			//case 2: when rows are same but cols are different
+			//there will 2 entries -> first entry will the col which less and next will col which is greater
+			if(triplet_mat1[i][1] < triplet_mat2[j][1]){
+				result_mat[k][0]= triplet_mat1[i][0];//dimension row of mat1
+				result_mat[k][1]= triplet_mat1[i][1];//dimension col of mat1
+				result_mat[k][2]= triplet_mat1[i][2] ;//add the values of (mat1)
+				k++;//move to next row or result matrix
+				i++;//move to next row of mat1
+				//next entry
+				result_mat[k][0]= triplet_mat2[j][0];//dimension row of mat2
+				result_mat[k][1]= triplet_mat2[j][1];//dimension col of mat2
+				result_mat[k][2]= triplet_mat2[j][2] ;//add the values of (mat2)
+				k++;//move to next row or result matrix
+				j++;//move to next row of mat2
+				
 			}else{
-				if ((triplet_mat1[i][0] < triplet_mat2[i][0])) {
-					result_mat[k][0] = triplet_mat1[i][0]; //row of trip1
-					result_mat[k][1] = triplet_mat1[i][1]; //col of trip1
-					result_mat[k][2] = triplet_mat1[i][2]; //mat1 value
-					k++;
-				}else{
-					result_mat[k][0] = triplet_mat2[i][0]; //row of trip2
-					result_mat[k][1] = triplet_mat2[i][1]; //col of trip2
-					result_mat[k][2] = triplet_mat2[i][2]; // mat2 value
-					k++;
-				}
+				result_mat[k][0]= triplet_mat2[j][0];//dimension row of mat2
+				result_mat[k][1]= triplet_mat2[j][1];//dimension col of mat2
+				result_mat[k][2]= triplet_mat2[j][2] ;//add the values of (mat2)
+				k++;//move to next row or result matrix
+				j++;//move to next row of mat2
+				
+				//next entry
+				result_mat[k][0]= triplet_mat1[i][0];//dimension row of mat1
+				result_mat[k][1]= triplet_mat1[i][1];//dimension col of mat1
+				result_mat[k][2]= triplet_mat1[i][2] ;//add the values of (mat1)
+				k++;//move to next row or result matrix
+				i++;//move to next row of mat1	
 			}
-//		}
+		}else{
+			//case 3: when rows & cols both are different
+			//there will 2 entries -> first entry will the row which less and next will row which is greater
+			if(triplet_mat1[i][0] < triplet_mat2[j][0]){
+				result_mat[k][0]= triplet_mat1[i][0];//dimension row of mat1
+				result_mat[k][1]= triplet_mat1[i][1];//dimension col of mat1
+				result_mat[k][2]= triplet_mat1[i][2] ;//add the values of (mat1)
+				k++;//move to next row or result matrix
+				i++;//move to next row of mat1
+				//next entry
+				result_mat[k][0]= triplet_mat2[j][0];//dimension row of mat2
+				result_mat[k][1]= triplet_mat2[j][1];//dimension col of mat2
+				result_mat[k][2]= triplet_mat2[j][2] ;//add the values of (mat2)
+				k++;//move to next row or result matrix
+				j++;//move to next row of mat2
+				
+			}else{
+				result_mat[k][0]= triplet_mat2[j][0];//dimension row of mat2
+				result_mat[k][1]= triplet_mat2[j][1];//dimension col of mat2
+				result_mat[k][2]= triplet_mat2[j][2] ;//add the values of (mat2)
+				k++;//move to next row or result matrix
+				j++;//move to next row of mat2
+				
+				//next entry
+				result_mat[k][0]= triplet_mat1[i][0];//dimension row of mat1
+				result_mat[k][1]= triplet_mat1[i][1];//dimension col of mat1
+				result_mat[k][2]= triplet_mat1[i][2] ;//add the values of (mat1)
+				k++;//move to next row or result matrix
+				i++;//move to next row of mat1
+			}
+		}
+	}
+	//push all the leftovers from mat1 into result matrix
+	while(i<(trip_mat1_rows+1)){
+		result_mat[k][0]= triplet_mat1[i][0];//dimension row of mat1
+		result_mat[k][1]= triplet_mat1[i][1];//dimension col of mat1
+		result_mat[k][2]= triplet_mat1[i][2] ;//add the values of (mat1)
+		k++;//move to next row or result matrix
+		i++;//move to next row of mat1
+	}
+	//push all the leftovers from mat2 into result matrix
+	while(j<(trip_mat2_rows+1)){
+		result_mat[k][0]= triplet_mat2[j][0];//dimension row of mat2
+		result_mat[k][1]= triplet_mat2[j][1];//dimension col of mat2
+		result_mat[k][2]= triplet_mat2[j][2] ;//add the values of (mat2)
+		k++;//move to next row or result matrix
+		j++;//move to next row of mat2
+	}
+	//finally call the display triplet
+	printf("Result ");
+	display_triplet(result_mat);
+	
+	printf("Result ");
+	//display the matrix
+	display_matrix_from_triplet(result_mat);
+}
+int get_element_from_triplet(int triplet[][3],int i,int j){
+	int trip_row = triplet[0][2]+1; //no of non zero count + 1(for the header)
+	for(int row=1;row<trip_row;row++){
+		if (triplet[row][0]==i && triplet[row][1]==j ){
+			return triplet[row][2]; //return the actual value
+		}
+	}
+	return 0;//if not found in the triplet matrix return 0
+}
+void display_matrix_from_triplet(int triplet_mat1[][3]){
+	//display matrix from triplet
+	int sparse_rows = triplet_mat1[0][0]; //rows
+	int sparse_cols = triplet_mat1[0][1]; //cols
+	printf(" Matrix:\n");
+	for(int i=0;i<sparse_rows;i++){
+		for(int j=0;j<sparse_cols;j++){
+			printf("%d ",get_element_from_triplet(triplet_mat1,i,j));
+		}
+		printf("\n");
 	}
 }
 void populate_sparse_into_triplet(int orig_mat[][3], int orig_mat_row,int orig_mat_col,int trip_mat[][3],int non_zero_count){
@@ -143,7 +232,8 @@ void populate_sparse_into_triplet(int orig_mat[][3], int orig_mat_row,int orig_m
 		}
 	}
 }
-void display_triplet(int triplet_mat[][3],int row,int col){
+void display_triplet(int triplet_mat[][3]){
+	int row = triplet_mat[0][2]+1 ;//1 for the header
 	printf("Triplet form:\n");
 	printf("\nRow\t Col \t Value\n");
 	for (int i=0;i<row;i++){

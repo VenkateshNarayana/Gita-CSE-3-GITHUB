@@ -44,16 +44,16 @@ int main(){
 	}
 	display_triplet(triplet_mat,trip_row,3); //display the triplet form
 	
-	//store the transpose of the triplet form
-	int triplet_trans[trip_row][3]; //new triplet contain the transpose 
-	for(int i=0;i<trip_row;i++){
-		//swap the values 1st col with 2nd col
-		triplet_trans[i][0]=triplet_mat[i][1];//store the col values of the triplet_mat into the triplet transpose row 
-		triplet_trans[i][1]=triplet_mat[i][0];//store the row values of the triplet_mat into the triplet transpose col
-		triplet_trans[i][2]=triplet_mat[i][2];//remains unchanged
-	}
-	printf("\nTranspose ");
-	display_triplet(triplet_trans,trip_row,3); //display the transpose triplet 
+//	//store the transpose of the triplet form
+//	int triplet_trans[trip_row][3]; //new triplet contain the transpose 
+//	for(int i=0;i<trip_row;i++){
+//		//swap the values 1st col with 2nd col
+//		triplet_trans[i][0]=triplet_mat[i][1];//store the col values of the triplet_mat into the triplet transpose row 
+//		triplet_trans[i][1]=triplet_mat[i][0];//store the row values of the triplet_mat into the triplet transpose col
+//		triplet_trans[i][2]=triplet_mat[i][2];//remains unchanged
+//	}
+//	printf("\nTranspose ");
+//	display_triplet(triplet_trans,trip_row,3); //display the transpose triplet 
 	
 	//finally display the transpose matrix using triplet form
 	display_matrix_using_triplet(triplet_trans,trip_row,3);
