@@ -70,6 +70,11 @@ int main(){
 			}	
 		}
 	}
+	//perform matrix addition check--> row1 == row2 and col1==col2
+	if (mat1_rows != mat2_rows || mat1_cols != mat2_cols){
+    	printf("Matrix addition cannot be performed.");
+    	return 0;
+	}
 	//create triplet matrix2 using non zero count of matrix2
 	int triplet_mat2[non_zero_count + 1][3];
 	//populate sparse into triplet matrix
@@ -107,53 +112,52 @@ void perform_addition_triplet(int triplet_mat1[][3],int triplet_mat2[][3],int re
 			k++;//move to next row or result matrix
 			i++;//move to next row of mat1
 			j++;//move to next row of mat2
-		}else if(triplet_mat1[i][0]==triplet_mat2[j][0] && triplet_mat1[i][1]!=triplet_mat2[j][1]){
+		}else if(triplet_mat1[i][0]==triplet_mat2[j][0] && triplet_mat1[i][1] < triplet_mat2[j][1]){
 			//case 2: when rows are same but cols are different
 			//there will 2 entries -> first entry will the col which less and next will col which is greater
-			if(triplet_mat1[i][1] < triplet_mat2[j][1]){
-				result_mat[k][0]= triplet_mat1[i][0];//dimension row of mat1
-				result_mat[k][1]= triplet_mat1[i][1];//dimension col of mat1
-				result_mat[k][2]= triplet_mat1[i][2] ;//add the values of (mat1)
-				k++;//move to next row or result matrix
-				i++;//move to next row of mat1
-				//next entry
-				result_mat[k][0]= triplet_mat2[j][0];//dimension row of mat2
-				result_mat[k][1]= triplet_mat2[j][1];//dimension col of mat2
-				result_mat[k][2]= triplet_mat2[j][2] ;//add the values of (mat2)
-				k++;//move to next row or result matrix
-				j++;//move to next row of mat2
-				
-			}else{
-				result_mat[k][0]= triplet_mat2[j][0];//dimension row of mat2
-				result_mat[k][1]= triplet_mat2[j][1];//dimension col of mat2
-				result_mat[k][2]= triplet_mat2[j][2] ;//add the values of (mat2)
-				k++;//move to next row or result matrix
-				j++;//move to next row of mat2
-				
-				//next entry
-				result_mat[k][0]= triplet_mat1[i][0];//dimension row of mat1
-				result_mat[k][1]= triplet_mat1[i][1];//dimension col of mat1
-				result_mat[k][2]= triplet_mat1[i][2] ;//add the values of (mat1)
-				k++;//move to next row or result matrix
-				i++;//move to next row of mat1	
-			}
-		}else{
+			
+			result_mat[k][0]= triplet_mat1[i][0];//dimension row of mat1
+			result_mat[k][1]= triplet_mat1[i][1];//dimension col of mat1
+			result_mat[k][2]= triplet_mat1[i][2] ;//add the values of (mat1)
+			k++;//move to next row or result matrix
+			i++;//move to next row of mat1
+			//next entry
+			result_mat[k][0]= triplet_mat2[j][0];//dimension row of mat2
+			result_mat[k][1]= triplet_mat2[j][1];//dimension col of mat2
+			result_mat[k][2]= triplet_mat2[j][2] ;//add the values of (mat2)
+			k++;//move to next row or result matrix
+			j++;//move to next row of mat2
+			
+		}else if(triplet_mat1[i][0]==triplet_mat2[j][0] && triplet_mat1[i][1] > triplet_mat2[j][1]){
+			result_mat[k][0]= triplet_mat2[j][0];//dimension row of mat2
+			result_mat[k][1]= triplet_mat2[j][1];//dimension col of mat2
+			result_mat[k][2]= triplet_mat2[j][2] ;//add the values of (mat2)
+			k++;//move to next row or result matrix
+			j++;//move to next row of mat2
+			
+			//next entry
+			result_mat[k][0]= triplet_mat1[i][0];//dimension row of mat1
+			result_mat[k][1]= triplet_mat1[i][1];//dimension col of mat1
+			result_mat[k][2]= triplet_mat1[i][2] ;//add the values of (mat1)
+			k++;//move to next row or result matrix
+			i++;//move to next row of mat1	
+
+		}else if(triplet_mat1[i][1]<triplet_mat2[j][1]){//row1<row2
 			//case 3: when rows & cols both are different
 			//there will 2 entries -> first entry will the row which less and next will row which is greater
-			if(triplet_mat1[i][0] < triplet_mat2[j][0]){
-				result_mat[k][0]= triplet_mat1[i][0];//dimension row of mat1
-				result_mat[k][1]= triplet_mat1[i][1];//dimension col of mat1
-				result_mat[k][2]= triplet_mat1[i][2] ;//add the values of (mat1)
-				k++;//move to next row or result matrix
-				i++;//move to next row of mat1
-				//next entry
+			result_mat[k][0]= triplet_mat1[i][0];//dimension row of mat1
+			result_mat[k][1]= triplet_mat1[i][1];//dimension col of mat1
+			result_mat[k][2]= triplet_mat1[i][2] ;//add the values of (mat1)
+			k++;//move to next row or result matrix
+			i++;//move to next row of mat1
+			//next entry
 				result_mat[k][0]= triplet_mat2[j][0];//dimension row of mat2
 				result_mat[k][1]= triplet_mat2[j][1];//dimension col of mat2
 				result_mat[k][2]= triplet_mat2[j][2] ;//add the values of (mat2)
 				k++;//move to next row or result matrix
 				j++;//move to next row of mat2
 				
-			}else{
+		}else{ //row1 > row2
 				result_mat[k][0]= triplet_mat2[j][0];//dimension row of mat2
 				result_mat[k][1]= triplet_mat2[j][1];//dimension col of mat2
 				result_mat[k][2]= triplet_mat2[j][2] ;//add the values of (mat2)
@@ -166,7 +170,6 @@ void perform_addition_triplet(int triplet_mat1[][3],int triplet_mat2[][3],int re
 				result_mat[k][2]= triplet_mat1[i][2] ;//add the values of (mat1)
 				k++;//move to next row or result matrix
 				i++;//move to next row of mat1
-			}
 		}
 	}
 	//push all the leftovers from mat1 into result matrix
