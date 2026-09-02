@@ -144,35 +144,7 @@ void perform_addition_triplet(int triplet_mat1[][3],int triplet_mat2[][3],int re
 			i++;//move to next row of mat1	
 
 		}
-//		else if(triplet_mat1[i][1]<triplet_mat2[j][1]){//row1<row2
-//			
-//			//there will 2 entries -> first entry will the row which less and next will row which is greater
-//			result_mat[k][0]= triplet_mat1[i][0];//dimension row of mat1
-//			result_mat[k][1]= triplet_mat1[i][1];//dimension col of mat1
-//			result_mat[k][2]= triplet_mat1[i][2] ;//add the values of (mat1)
-//			k++;//move to next row or result matrix
-//			i++;//move to next row of mat1
-//			//next entry
-//				result_mat[k][0]= triplet_mat2[j][0];//dimension row of mat2
-//				result_mat[k][1]= triplet_mat2[j][1];//dimension col of mat2
-//				result_mat[k][2]= triplet_mat2[j][2] ;//add the values of (mat2)
-//				k++;//move to next row or result matrix
-//				j++;//move to next row of mat2
-//				
-//		}else{ //row1 > row2
-//				result_mat[k][0]= triplet_mat2[j][0];//dimension row of mat2
-//				result_mat[k][1]= triplet_mat2[j][1];//dimension col of mat2
-//				result_mat[k][2]= triplet_mat2[j][2] ;//add the values of (mat2)
-//				k++;//move to next row or result matrix
-//				j++;//move to next row of mat2
-//				
-//				//next entry
-//				result_mat[k][0]= triplet_mat1[i][0];//dimension row of mat1
-//				result_mat[k][1]= triplet_mat1[i][1];//dimension col of mat1
-//				result_mat[k][2]= triplet_mat1[i][2] ;//add the values of (mat1)
-//				k++;//move to next row or result matrix
-//				i++;//move to next row of mat1
-//		}
+
 	}
 	//push all the leftovers from mat1 into result matrix
 	while(i<(trip_mat1_rows+1)){
