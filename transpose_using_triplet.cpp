@@ -2,9 +2,9 @@
 */
 #include<stdio.h>
 void display_matrix(int mat[][3],int ,int );
-void display_triplet(int mat[][3],int ,int );
-void display_matrix_using_triplet(int mat[][3],int ,int );
-int get_matrix_element(int mat[][3],int row,int col,int i,int j);
+void display_triplet(int mat[][3]);
+void display_matrix_using_triplet(int mat[][3]);
+int get_matrix_element(int mat[][3],int i,int j);
 int main(){
 	int mat_sparse[4][3]={
 						{0,0,1},
@@ -42,32 +42,34 @@ int main(){
 			}
 		}
 	}
-	display_triplet(triplet_mat,trip_row,3); //display the triplet form
+	display_triplet(triplet_mat); //display the triplet form
 	
-//	//store the transpose of the triplet form
-//	int triplet_trans[trip_row][3]; //new triplet contain the transpose 
-//	for(int i=0;i<trip_row;i++){
-//		//swap the values 1st col with 2nd col
-//		triplet_trans[i][0]=triplet_mat[i][1];//store the col values of the triplet_mat into the triplet transpose row 
-//		triplet_trans[i][1]=triplet_mat[i][0];//store the row values of the triplet_mat into the triplet transpose col
-//		triplet_trans[i][2]=triplet_mat[i][2];//remains unchanged
-//	}
-//	printf("\nTranspose ");
-//	display_triplet(triplet_trans,trip_row,3); //display the transpose triplet 
+	//store the transpose of the triplet form
+	int triplet_trans[trip_row][3]; //new triplet contain the transpose 
+	for(int i=0;i<trip_row;i++){
+		//swap the values 1st col with 2nd col
+		triplet_trans[i][0]=triplet_mat[i][1];//store the col values of the triplet_mat into the triplet transpose row 
+		triplet_trans[i][1]=triplet_mat[i][0];//store the row values of the triplet_mat into the triplet transpose col
+		triplet_trans[i][2]=triplet_mat[i][2];//remains unchanged
+	}
+	printf("\nTranspose ");
+	//display the triplet matrix
+	display_triplet(triplet_trans); //display the transpose triplet 
 	
 	//finally display the transpose matrix using triplet form
-	display_matrix_using_triplet(triplet_trans,trip_row,3);
+	display_matrix_using_triplet(triplet_trans);
 }
 void display_matrix(int mat[][3],int rows,int cols){
 	printf("\nGiven Matrix:\n");
 	for (int i=0;i<rows;i++){
 		for(int j=0;j<cols;j++){
-			printf("%d ",mat[i][j]);	
+			printf("%d ",mat[i][j]);
 		}
 		printf("\n");
 	}
 }
-void display_triplet(int triplet_mat[][3],int row,int col){
+void display_triplet(int triplet_mat[][3]){
+	int row = triplet_mat[0][2]+1; //add 1 for header row 
 	printf("Triplet form:\n");
 	printf("\nRow\t Col \t Value\n");
 	for (int i=0;i<row;i++){
@@ -75,25 +77,27 @@ void display_triplet(int triplet_mat[][3],int row,int col){
 		printf("\n");
 	}
 }
-int get_matrix_element(int triplet_mat[][3],int trip_mat_row,int trip_mat_col,int i_row,int j_col){
+int get_matrix_element(int triplet_mat[][3], int i_row,int j_col){
 	int element = 0;
+	int trip_mat_row = triplet_mat[0][2]+1;
 	//check in the triplet if the value exist return else return 0
 	for (int i=0;i<trip_mat_row;i++){
 		if(triplet_mat[i][0]==i_row && triplet_mat[i][1]==j_col){	
 			element = triplet_mat[i][2]; //pass the value of the matrix[i_row][j_col]
 			return element;
 		}
-	}	
+	}
 	return element;
 }
-void display_matrix_using_triplet(int triplet_mat[][3],int trip_row,int trip_col){
+void display_matrix_using_triplet(int triplet_mat[][3]){
 	printf("\nMatrix from TRIPLET FORM:\n");
 	int rows = triplet_mat[0][0]; //row dimension of original matrix 
 	int cols = triplet_mat[0][1]; //col dimension of origianl matrix
+	
 	//print the matrix from triplet form(using get_matrix_element function)
 	for (int i=0;i<rows;i++){
 		for(int j=0;j<cols;j++){
-			printf("%d ",get_matrix_element(triplet_mat,trip_row, trip_col,i, j));	
+			printf("%d ",get_matrix_element(triplet_mat, i, j));	
 		}
 		printf("\n");
 	}
