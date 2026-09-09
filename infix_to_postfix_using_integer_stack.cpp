@@ -1,7 +1,8 @@
 /* Implementing Infix to Postfix operation using Stack
    Algorithm
    	step1 : read the infix expression from left to right 
-   	step2 : if operator then peek the top if peek is having higher precedence then push current operator. Else
+   	step2 : if operator then peek the top if peek is having higher precedence then push current operator. 
+	        Else
 	           pop & push the current operator and then push the popped item.
 	        or '(' then push into stack
    	step3 : if its operand ,append to output string result directly
@@ -32,33 +33,51 @@ int main(){
 	printf("\nGiven Infix Expression:%s",exp);
 	//follow the algorithm
 	//step1: read the infix from left to right
-	int i=0; //initialize i to index =0  which is first character of the string
-	int k=0;
+	int i=0; //initialize i to index =0  which is 1st character of the expression string
+	int k=0; //initialize k to index =0  which is 1st character of the output string
+	int pop_item;
 	while(exp[i]!='\0'){//read util string terminator character '\0'
+		if(exp[i]=='('){
+			push(stack,exp[i]); //push ascii value to stack
 		// step2:
 		// if operator then peek the top if peek is having higher precedence then push current operator. Else
 	    // pop & push the current operator and then push the popped item.
 	    // or '(' then push into stack
-		if(exp[i]=='+' ||
-		   exp[i]=='-' ||
-		   exp[i]=='*' ||
-		   exp[i]=='/' ||
-		   exp[i]=='%' ||
-		   exp[i]=='('
+		}else if(exp[i]=='+' ||
+			     exp[i]=='-' ||
+			     exp[i]=='*' ||
+			     exp[i]=='/' ||
+			     exp[i]=='%' 
 		   ){
-		   	push(stack,exp[i]); //push ascii value to stack
+		   	int peek_item = peek(stack);
+		   	while(!is_empty() &&
+                   peek_item != '(' && 
+				   operator_precedence(peek_item)>operator_precedence(exp[i])){
+		   		
+				peek_item = pop(stack);   //pop the item 
+		   		postfix[k++] = peek_item; //& append to postfix
+			}
+			//next push the current operator
+			push(stack,exp[i]); //push ascii value to stack  
+				
 		}else if (exp[i]==')'){ //step4 : if ‘)’ ? pop to output until ‘(’ is found; discard both parenthesis
 			int pop_item = pop(stack);
 			while(pop_item!='('){
-				postfix[k++]= pop_item;
-				pop_item = pop(stack);		
+				postfix[k++]= pop_item;   //append to output postfix expression 
+				pop_item = pop(stack);	  //pop to check if opening parentheis is found
 			}
 			
 		}else{//step3 : if its operand ,append to output string result directly
-				postfix[k++]= exp[i];			
+			postfix[k++]= exp[i];	//append to output string		
 		}
-		i++; //move to next character
+		i++; //move to next character of the infix expression
 	}
+	//append if any operator is left in stack
+	while(!is_empty()){
+		pop_item = pop(stack);
+		postfix[k++]= pop_item;
+	}
+	
 	postfix[k]='\0'; //append the string terminator
 	
 	//print the final output string
@@ -73,6 +92,7 @@ int operator_precedence(char ch){
 		case '*':
 		case '%':	
 		case '/': return 2;
+		case '(': return 3;
 	}
 }
 int is_empty(){
