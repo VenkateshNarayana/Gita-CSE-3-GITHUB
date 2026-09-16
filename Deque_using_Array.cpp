@@ -1,11 +1,11 @@
-/*Deque - It is  LDS where data management is managed using flexible insertion and deletion(both ends)
+/*Deque(Double Ended Queue) - It is  LDS where data management is managed using flexible insertion and deletion(both ends)
   Operations - 1.add_first    - add the element in the front(right shifting)
   			   2.add_last     - add the element in the rear	
   			   3.remove_first - delete the element from the front(left shifting)
                3.remove_last  - delete the element from the rear
                3.peek_front   - get the first element of the Q
                4.peek_rear    - get the last element of the Q
-               5.is_empty     - return 1 front>rear else 0
+               5.is_empty     - return 1 front==-1 else 0
                6.is_full      - return 1 when rear reaches MAX_SIZE -1 of the  Q
                7.traverse     - display the Q elements from front(head) to rear(tail). display the current size(rear+1 - front)
          
