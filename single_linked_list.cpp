@@ -37,6 +37,15 @@ int main(){
 	printf("%d->",node1.next->data);//node2
 	printf("%d->",node1.next->next->data);//node3
 	printf("%d->",node1.next->next->next->data);//node4
+	printf("null]\n");
+	
+	struct node* temp;
+	temp = &node1; //bcos this is my head node
+	printf("\nMy Linked list [");
+	while(temp!=NULL){
+		printf("%d->",temp->data); //print the data
+		temp = temp->next; //move to the next node
+	}
 	printf("null]");
 	
 	
