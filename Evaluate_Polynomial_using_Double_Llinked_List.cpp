@@ -24,6 +24,8 @@ void insert_at_head(struct node**,struct node**,int,int);      //param1 = input 
 void insert_at_tail(struct node**,struct node**,int,int);      //param1 = input data to fill the data part of the node
 //evaluate polynomial
 void evaluate_polynomial_add(struct node*,struct node*,struct node*,struct node*);//send p_head & p_tail and q_head & q_tail
+void evaluate_polynomial_multiply(struct node*,struct node*,struct node*,struct node*);
+
 //traverse operation - from head to tail
 void traverse_head(struct node*);          //traverse the list from head to tail
 void traverse_tail(struct node*);          //traverse the list from tail to head
@@ -40,15 +42,16 @@ int main(){
 	traverse_head(p_head);
 //	traverse_tail(p_head);
 	
-	//create a polynomial q(x) = 5 X^2 + 3 X + 7
+	//create a polynomial q(x) = 5 X + 3
 	//insert at head
-	insert_at_tail(&q_head,&q_tail,5,2);
-	insert_at_tail(&q_head,&q_tail,3,1);
-	insert_at_tail(&q_head,&q_tail,7,0);
+	insert_at_tail(&q_head,&q_tail,5,1);
+	insert_at_tail(&q_head,&q_tail,3,0);
 	
 	traverse_head(q_head);
 	
 	evaluate_polynomial_add(p_head,p_tail,q_head,q_tail);
+	evaluate_polynomial_multiply(p_head,p_tail,q_head,q_tail);
+	
 	
 	//free the nodes if the linked list is not empty
 	free_list(p_head);
@@ -100,9 +103,23 @@ void insert_at_tail(struct node** head, struct node** tail,int coeff,int exp){
 		*tail = new_node;
 		*head = *tail;
 	}else{
-		(*tail)->next     = new_node;  //point the tail to new node
-		new_node->prev = *tail;      //point my new node's previous to old tail
-		*tail           = new_node;  //move old tail to new node
+		//we will check if the exponent already exists in the list
+		//if exist the add the coefficient else we add the term in the tail
+		//search in the list first using temp
+		struct node* temp = *head;
+		while(temp!=NULL){
+			if ((temp)->exp == new_node->exp){
+				(temp)->coeff = (temp)->coeff + new_node->coeff;
+				break;
+			}
+			temp = (temp)->next ; //move to next node until null
+		}
+		if(temp==NULL){
+			//add the new node in the tail because we couldnt find the exponent
+			(*tail)->next     = new_node;  //point the tail to new node
+			new_node->prev = *tail;      //point my new node's previous to old tail
+			*tail           = new_node;  //move old tail to new node
+		}
 	}
 	printf("\nInserted term(%d,%d) at tail Successfully!!",coeff,exp);
 }
@@ -150,6 +167,30 @@ void evaluate_polynomial_add(struct node* p_head,struct node* p_tail,struct node
 	}
 	//print the polynomial addition result
 	traverse_head(res_head);
+	free_list(res_head); //free all the nodes
+}
+void evaluate_polynomial_multiply(struct node* p_head,struct node* p_tail,struct node* q_head,struct node* q_tail){
+	struct node* res_head=NULL;
+	struct node* res_tail=NULL;
+	//traverse the p_head and q_head until they reach last node
+	struct node* temp1 = p_head;
+	struct node* temp2 = q_head;
+	while(temp1!=NULL){ //p_head traversal
+		temp2 = q_head; //very very critical step	
+		//any leftover of p_head will be inserted here
+		while(temp2!=NULL ){//q_head traversal
+			int coeff = temp1->coeff * temp2->coeff ;
+			int exp   = temp1->exp + temp2->exp; //when variabale are multiplied power gets added 
+			insert_at_tail(&res_head,&res_tail,coeff,exp); //store it in res
+			//move q_head to next node
+			temp2 = temp2->next;
+		}
+		temp1 = temp1->next; //move p_head to next node
+	}
+	
+	//print the polynomial addition result
+	traverse_head(res_head);
+	free_list(res_head); //free all the nodes
 }
 void traverse_head(struct node* head){
 	struct node* temp;
