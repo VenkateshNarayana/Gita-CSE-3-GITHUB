@@ -177,7 +177,7 @@ void evaluate_polynomial_multiply(struct node* p_head,struct node* p_tail,struct
 	struct node* temp2 = q_head;
 	while(temp1!=NULL){ //p_head traversal
 		temp2 = q_head; //very very critical step	
-		//any leftover of p_head will be inserted here
+		//traverse p and q from head to tail
 		while(temp2!=NULL ){//q_head traversal
 			int coeff = temp1->coeff * temp2->coeff ;
 			int exp   = temp1->exp + temp2->exp; //when variabale are multiplied power gets added 
