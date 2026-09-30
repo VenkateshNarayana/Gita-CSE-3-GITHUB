@@ -1,184 +1,209 @@
-/* linked list - It is a linear data structure where elements(nodes) are stroed in scattered memory and are connected using pointers.
-				 These nodes have 2 parts - 1. data (primitive,non-primitive) and 2.pointer(reference variable)
-   Operations :	1.Insert   - (3 types - at begin, at end, at middle),
-   				2.Delete   - (3 types - at begin, at end, at middle),
-   				3.Traverse - visit all the nodes
-   				4.Search   - finding a node	
+/* Single Linked List - It is a Linear data structure which stores the elements as nodes which is scattered in memory & connected
+						using pointers.
+   Anatomy of Node   -  A node consists of 2 parts(first part is data and second is reference variable(pointer) which can store 
+   						the address of another node
+						1.DATA field 
+						2.NEXT pointer
+  HOW do we create a node? - We will use user defined data type (struct) to create our nodes.
+  	struct node{
+	  int data;
+	  struct node* next;
+    }
 */
 #include<stdio.h>
 #include<stdlib.h>
-
 struct node{
-	int           data; //1. this is store data part
-	struct node*  next; //2. this is pointer variable to store the address of another node
+	int          data; //this will store the data part
+	struct node* next; //this is a pointer variable which will store the address of another node
 };
-struct node* head=NULL;        //tracking the head node
-struct node* tail=NULL;        //tracking the tail node
-struct node* create_node(int); //param1 = input data to fill the data part of the node
+struct node* head=NULL; //track the first node
+struct node* tail=NULL; //track the last node
 
-//insert operations - at head, at tail, at position
-void insert_at_head(int);      //param1 = input data to fill the data part of the node
-void insert_at_tail(int);      //param1 = input data to fill the data part of the node
+struct node* create_node(int); //param1 = input data for storing the data(information part1)
+//insert operations - at head, at position, at tail
+void insert_at_head(int);         //param1 = input data for storing the data(information part1)
+void insert_at_tail(int);         //param1 = input data for storing the data(information part1)
+void insert_at_position(int,int); //param1 = where to insert ;param2 = value(what to insert)?
 
-//delete operations - at head, at tail, at position
-void delete_at_head();         //delete the current head and move to next node of head
-void delete_at_tail();         //delete the current tail and move to previous node of tail
+//delete operations - at head, at position, at tail
+void delete_at_head();        //it will remove the current head and move the head to next node
+void delete_at_tail();        //it will remove the current tail and move the tail to previous node
 
-//traverse operation - from head to tail
-void traverse_list();          //traverse the list from head to tail
-void free_list();              //to free all the nodes in the list (prevent memory leak)      
+//traverse operation - traverse from head to tail
+void traverse_list();   //traverse the list from head to tail
+void free_list();       //free the linked list if it is not empty using free() function
 int main(){
 	
-	//insert at head
+	//create the linked list using insert at head
 	insert_at_head(10);
 	traverse_list();
 	insert_at_head(20);
 	traverse_list();
-
-
-	//insert at tail
-	insert_at_tail(40);
+	
+	//create list using insert at tail
+	insert_at_tail(30);
 	traverse_list();
 	insert_at_tail(50);
 	traverse_list();
+	//insert at position
+	insert_at_position(30,45);
+	traverse_list();
 	
-	//delete at head
+	
+	//perform delete at head
 	delete_at_head();
 	traverse_list();
 	
-	//delete at tail
+	//perform delete at tail
 	delete_at_tail();
 	traverse_list();
 	
-//	//delete at head
-//	delete_at_head();
-//	traverse_list();
-//	
-//	//delete at tail
-//	delete_at_tail();
-//	traverse_list();
-	
-	//free the nodes if the linked list is not empty
 	free_list();
-	return 0;
+	return 0; //return main
+	
 }
 struct node* create_node(int input_data){
-	//create the node using malloc
-	struct node* new_node = (struct node*) malloc(sizeof(struct node));
+	//create the node using malloc 
+	struct node* new_node = (struct node*)malloc(sizeof(struct node));
 	
-	//check if memory allocation failed?
 	if(new_node==NULL){
-		printf("memory allocation failed...");
+		printf("memory allocation failed....");
 		return NULL;
 	}
-	//if new node is created successfull then assign the data 
-	new_node->data = input_data; //store the input data
-	new_node->next = NULL;       //becauase its a brand new node
+	new_node->data = input_data ; //fill the data part with the input value provided in the param1
+	new_node->next = NULL;        //fill null as this is a brand new node
 	return new_node;
 }
 void insert_at_head(int input_data){
+	//crate the new node
 	struct node* new_node = create_node(input_data);
-	if (new_node==NULL) return; //memory allocation failed
-	
-	//now insert at head
+	if(new_node==NULL) return; //memory allocation failed dont proceed
 	if(head==NULL){
-		//if linked is empty then head = tail = new node
 		head = new_node;
-		tail = head;
+		tail = head;    //because single node we will have our head and tail pointing to the same new node
 	}else{
-		new_node->next = head ;//pointe new node to current head
-		head = new_node;       //move head to new node
+		new_node->next = head; //point new node to current head
+		head = new_node;       //move the head to new node
 	}
-	printf("\nInserted %d at head Successfully!!",input_data);
+	printf("\nInserted %d at head successfully",input_data);
 }
-
 void insert_at_tail(int input_data){
+	//crate the new node
 	struct node* new_node = create_node(input_data);
-	if (new_node==NULL) return; //memory allocation failed
-	
-	//now insert at head
+	if(new_node==NULL) return; //memory allocation failed dont proceed
 	if(tail==NULL){
-		//if linked is empty then head = tail = new node
 		tail = new_node;
-		head = tail;
+		head = tail;    //because single node we will have our head and tail pointing to the same new node
 	}else{
-		tail->next = new_node; //point the tail to new node
-		tail = new_node;       //move tail to new node
+		tail->next = new_node; //point current tail to new node
+		tail = new_node;       //move the tail to new node
 	}
-	printf("\nInserted %d at tail Successfully!!",input_data);
+	printf("\nInserted %d at tail successfully",input_data);
+}
+void insert_at_position(int node_value,int input_data){
+	//crate the new node
+	struct node* new_node = create_node(input_data);
+	if(new_node==NULL) return; //memory allocation failed dont proceed
+	
+	if(head==NULL){
+		printf("\nList is empty ....cannot find the position(%d)",node_value);
+	}else if(head->data==node_value){
+		insert_at_head(input_data);		
+	}else{
+		//traverse to last node but 1
+		struct node* temp = head; //start from head
+		struct node* prev = NULL;
+		while(temp !=NULL){
+			prev = temp;
+			temp = temp->next; //move to next node
+			if(temp->data==node_value) break;
+		}
+		if(temp==NULL){
+			printf("\nPosition (%d)node not found in the list",node_value);
+		}else{
+			printf("\nprev_data=%d",prev->data);
+			//now you are at (n-1)th node
+			new_node->next = prev->next; //point new_node's next to temp's next
+			prev->next     = new_node;   //point temp's next to new node
+			printf("\nInserted %d at position(%d) successfully",input_data,node_value);
+		}
+	}
+	
 }
 void delete_at_head(){
-	//step 0: check if the list is empty
+	//step0 : check if the linked is empty or not
 	if(head==NULL){
-		printf("\nList is empty...cannot perform delete operation!!!");
+		printf("\nList is empty ...cannot perform delete operation");
 		return;
 	}
-	//step 1: store the head in temp
-	struct node* temp = head;
-	//step 2: move the current head to next node
-	head = head->next;
-	//step 3: free the temp
-	free(temp);
 	
-	printf("\nDeleted node at head Successfully!!");
+	//step1 : store the head in a temp
+	struct node* temp = head;
+	//step2 : move the head to next node
+	head = head->next;
+	//step3 : free the temp
+	free(temp);
+	printf("\nDeleted node at head successfully");
 }
 void delete_at_tail(){
 	struct node* temp = NULL;
-	//step 0: check if the list is empty
-	if(tail==NULL){
-		printf("\nList is empty...cannot perform delete operation!!!");
+	//step0 : check if the linked is empty or not
+	if(head==NULL){
+		printf("\nList is empty ...cannot perform delete operation");
 		return;
 	}
-	//chec if there is only 1 node
-	if (head==tail){
-		//step 0.1: store the head in temp
-		temp = head;
-		//step 0.2: set the head and tail to NULL (empty list)
-		head = tail = NULL;
-		//step 0.3: free the temp
-		free(temp);
+	//check if there is only 1 node left
+	if(head==tail){
+		temp = tail; //store the head/tail in a temp
+		tail = head = NULL; //delete the node
+		free(temp);  //free the temp
 	}else{
-		//step 1: store the tail in temp_tail
-		struct node* temp_tail = tail;
-		//step 2: traverse to 1 node before tail
+		//if head and tail are not same it means there is more than 1 node available 
+		//step1 : move to one node before tail & store it in a temp
 		temp = head;
 		while(temp->next!=tail){
-			temp = temp->next;
+			temp=temp->next;
 		}
-		//we reached 1 node before tail
-		printf("\nNode before tail = %d",temp->data);
-		//step 3:store NULL in temp's next because it is going to become my tail node
-		temp->next = NULL;
-		tail = temp; //move tail to temp(which is now the last node)
-		//step 4: free the temp_tail
-		free(temp_tail);
+		//node before tail
+//		printf("\nNode before tail=%d",temp->data);
+		
+		//step2 : store the tail in another pointer old_tail
+		struct node* old_tail = tail;
+		
+		//step3 : move the tail to one node before
+		tail = temp;
+		tail->next = NULL;//point the next to NULL since it has become the tail node
+		
+		//step4 : free the old tail
+		free(old_tail);
 	}
-	printf("\nDeleted node at tail Successfully!!");
+	printf("\nDeleted node at tail successfully");
 }
+
 void traverse_list(){
 	struct node* temp;
 	
 	if (head==NULL){
-		printf("\nMy Linked list(head=NULL,tail=NULL) [ empty list ]");
+		printf("\nMy Linked list(head=NULL,tail=NULL)[ empty list]");
 		return;
 	}
-	temp = head; //bcos this is my head node
-	printf("\nMy Linked list(head=%d,tail=%d) [",head->data,tail->data);
+	temp = head; //store head in temp so that we can traverse till tail from head
+	printf("\nMy Linked list(head=%d,tail=%d)[",head->data,tail->data);
 	while(temp!=NULL){
-		printf("%d->",temp->data); //print the data
-		temp = temp->next; //move to the next node
+		printf("%d->",temp->data);
+		temp = temp->next;
 	}
 	printf("null]");
 }
 void free_list(){
-	struct node* temp=NULL;
-	
-	if (head!=NULL){
-		while(head!=NULL){
-			temp = head;       //to store the head
-			head = head->next; //move to the next node
-			free(temp);        //free the prev node(head)
-		}
-		printf("\nfreed all the nodes Successfully!!!");
-	}	
+	struct node* temp;
+	if (head==NULL){
+		return;
+	}
+	while(head!=NULL){
+		temp = head;        //store head in temp so that we can free it after it moves to next node
+		head = head->next;  //move head to next node
+		free(temp);         //free the temp
+	}
+	printf("\nfreed all the node of the list successfully");
 }
